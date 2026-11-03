@@ -1,0 +1,19 @@
+{
+  "enabled": false,
+  "endpoint": "https://ACCOUNT_ID.r2.cloudflarestorage.com",
+  "bucket": "metin2-history",
+  "prefix": "metin2-history-v1",
+  "accessKeyId": "",
+  "secretAccessKey": "",
+  "maxDailyReads": 50000,
+  "maxDailyWrites": 20000,
+  "maxDailyUploadBytes": 2147483648,
+  "maxLifetimeUploadBytes": 107374182400,
+  "cacheBytes": 536870912,
+  "automaticUpload": false,
+  "maxRowsPerPass": 5000,
+  "automaticDailyBackup": false,
+  "recoveryBaseId": "",
+  "keepLocalCheckpoints": 2,
+  "maxLocalCheckpointBytes": 8589934592
+}

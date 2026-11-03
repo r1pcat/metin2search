@@ -1,0 +1,13 @@
+﻿{
+  "enabled": true,
+  "storage": "local",
+  "localRoot": "D:\\Metin2Search\\history-store",
+  "prefix": "metin2-history-v1",
+  "cacheBytes": 536870912,
+  "automaticUpload": true,
+  "maxRowsPerPass": 5000,
+  "automaticDailyBackup": true,
+  "recoveryBaseId": "TAM-YEDEK-KIMLIGI",
+  "keepLocalCheckpoints": 2,
+  "maxLocalCheckpointBytes": 8589934592
+}
