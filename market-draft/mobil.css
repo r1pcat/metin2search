@@ -1,0 +1,108 @@
+
+@media (max-width:760px){
+  .topbar{display:contents}
+  .topbar-inner{position:sticky;top:0;z-index:40;background:rgba(24,25,30,.97);border-bottom:1px solid var(--line);gap:14px;padding:0 16px}
+
+  .cat-bar{border-top:0;border-bottom:1px solid var(--line)}
+  .cat-grid{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:74px;padding:0 8px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity;scrollbar-width:none;
+    -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent)}
+  .cat-grid::-webkit-scrollbar{display:none}
+  .cat{scroll-snap-align:start;padding:7px 2px 6px}
+  .cat img{width:24px;height:24px}
+
+  .item,.list.grid .item{grid-template-columns:56px minmax(0,1fr) auto;grid-template-areas:"slot info info" "seller seller price";column-gap:12px;row-gap:10px}
+  .list.grid .slot{width:56px;height:56px}
+  .cell-seller{align-self:end}
+  .cell-price{align-self:end}
+}
+
+@media (max-width:640px){
+  :root{--tabbar:calc(56px + env(safe-area-inset-bottom,0px))}
+  body{padding-bottom:var(--tabbar)}
+  .topbar-inner{gap:10px}
+  .top-actions{flex:none;gap:8px}
+  .top-actions>a.icon-link{display:none}
+  .server-pill{padding:0 10px;gap:6px}
+  .server-pill strong{max-width:92px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .server-menu{max-width:calc(100vw - 24px)}
+
+  .main-nav{position:fixed;left:0;right:0;bottom:0;z-index:45;height:var(--tabbar);padding-bottom:env(safe-area-inset-bottom,0px);
+    display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;background:rgba(24,25,30,.98);border-top:1px solid var(--line2)}
+  .main-nav a{position:relative;flex-direction:column;justify-content:center;gap:3px;padding:0 2px;border-bottom:0;border-top:2px solid transparent;font-size:10.5px;min-width:0}
+  .main-nav a .t{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+  .main-nav a .ic{width:20px;height:20px}
+  .main-nav a.active{border-top-color:var(--gold);color:var(--gold-hi)}
+  .main-nav a b{position:absolute;top:5px;left:calc(50% + 6px);min-width:16px;padding:0 4px;font-size:10px;line-height:15px}
+
+  .cmp-tray{bottom:calc(var(--tabbar) + 12px);max-width:calc(100vw - 24px)}
+  .cmp-tray .txt{overflow:hidden;text-overflow:ellipsis}
+  .toast{bottom:calc(var(--tabbar) + 12px);max-width:calc(100vw - 24px)}
+
+  .foot a{color:var(--muted)}
+}
+
+.m-only{display:none}
+.d-only,.m-only{align-items:center;gap:8px}
+.d-only{display:inline-flex}
+
+@media (max-width:760px){
+  .shop-body{container-type:inline-size}
+  .inv-grid{--cell:clamp(28px,calc((100cqw - 18px - (var(--shop-cols,10) - 1) * 2px) / var(--shop-cols,10)),44px)}
+  .inv-item img{max-width:calc(var(--cell) - 8px)}
+  .cmp-table>.rh{position:sticky;left:0;z-index:1}
+}
+
+@media (max-width:640px){
+  .d-only{display:none}
+  .m-only{display:inline-flex}
+
+  .search-row{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"q q" "sort adv" "seller seller";gap:8px;padding:10px}
+  .search-row>div:nth-child(1){grid-area:q}
+  .search-row>div:nth-child(2){grid-area:seller}
+  .search-row>div:nth-child(3){grid-area:sort}
+  .search-row>div:nth-child(4){grid-area:adv}
+  .search-row>div:nth-child(1)>.lbl,.search-row>div:nth-child(3)>.lbl,.search-row>div:nth-child(4)>.lbl{display:none}
+  .search-row .btn{height:42px}
+  .search-panel:not(.m-open) .search-row>div:nth-child(2),
+  .search-panel:not(.m-open) .bonus-row{display:none}
+  .search-panel.m-open #adv-btn{border-color:var(--gold-lo);color:var(--gold-hi);background:var(--gold-soft)}
+
+  .adv{grid-template-columns:1fr 1fr;gap:10px;padding:10px}
+  .bonus-row{gap:8px;padding:10px}
+  .bonus-row .bf-title small{display:none}
+  .bonus-row .bf-stat{flex:1 1 100%;min-width:0}
+  .bonus-row .bf-val{flex:1 1 72px;width:auto}
+  .applied{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding:0 10px 10px}
+  .applied::-webkit-scrollbar{display:none}
+  .applied .chip{flex:none}
+  .price-note{gap:4px 14px}
+  .price-note span:nth-child(2){display:none}
+
+  .drawer{top:0;left:0;right:0;bottom:0;width:auto;height:100vh;height:100dvh;max-height:none;border:0;border-radius:0;transform:translateY(24px)}
+  .drawer.open{transform:none}
+  dialog.modal,dialog.modal.narrow{width:100%;max-width:100%;height:100vh;height:100dvh;max-height:none;margin:0;border:0;border-radius:0}
+  .m-head{flex-wrap:wrap;gap:10px;padding:12px 14px;position:sticky;top:0}
+  .m-head .m-ico{width:36px;height:36px}
+  .m-title h2{font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .m-head .ibtn{order:2}
+  .m-head>.btn{order:3;width:100%}
+  .m-body{padding:14px;flex:1;-webkit-overflow-scrolling:touch}
+  .hist-table{display:block;overflow-x:auto;white-space:nowrap}
+
+  input,select,textarea{font-size:16px}
+}
+
+@media (max-width:760px){
+  .item,.list.grid .item{grid-template-areas:"slot info info" "seller seller seller" "act act price"}
+  .cell-act,.list.grid .cell-act{display:flex;grid-area:act;justify-content:flex-start;align-self:end}
+}
+
+@media (pointer:coarse){
+  .seg button{height:38px}
+  .ibtn{width:40px;height:40px}
+  .pager button{min-width:42px;height:42px}
+  .counts button,.el-pick button{height:42px}
+  .chip{height:34px}
+  .chip button{padding:8px;margin:-6px -4px -6px -2px}
+}
+@media (hover:none){.hovercard{display:none!important}}

@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1d1f25">
+<title>Metin2Search · Pazarı gör, değerini bil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="taslak.css?v=20">
+<link rel="stylesheet" href="ana.css?v=23"><link rel="stylesheet" href="cam.css?v=13">
+<link rel="stylesheet" href="reklam.css?v=3">
+<link rel="stylesheet" href="yasal.css?v=1">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg"></head>
+<body class="home">
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="/"><img src="/assets/metin2-logo.png" alt=""><span class="brand-word">METIN2 <b>SEARCH</b><span class="beta">BETA</span></span></a>
+    <nav class="main-nav" aria-label="Ana menü">
+      <a href="#sunucular" data-ic="globe"><span class="t">Sunucular</span></a>
+      <a href="#pazar-hacmi" data-ic="chart"><span class="t">Pazar hacmi</span></a>
+      <a href="#neler-var" data-ic="info"><span class="t">Neler var</span></a>
+    </nav>
+    <div class="top-actions">
+      <a class="btn gold" href="/pazar" data-market>Pazarı keşfet <span data-ic="arrow"></span></a>
+      <a class="icon-link" href="https://discord.gg/" target="_blank" rel="noopener noreferrer" aria-label="Discord topluluğu"><img src="/assets/discord-symbol.svg" alt=""></a>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-copy">
+    <h1><span class="eyebrow">Metin2 Ticaret Camı ve Pazar rehberin</span>Pazarı gör.<br><span>Değerini bil.</span></h1>
+    <p>Metin2 Gelişmiş Ticaret Camı ve Pazar ilanlarında aradığın eşya, doğru efsun, sana uygun fiyat. Sunucunun pazarını keşfet; kararını detaylarla ver.</p>
+    <form class="hero-search" action="/pazar">
+      <span class="field sel hero-server"><span data-ic="globe"></span><select id="h-server" name="server" aria-label="Sunucu"><option value="safir">Safir</option></select></span>
+      <label class="field"><span data-ic="search"></span><input name="q" placeholder="Bir eşya ara, örneğin Zodyak Yay" autocomplete="off"></label>
+      <button class="btn gold" type="submit">Pazarda ara</button>
+    </form>
+    <div class="hero-links"><a href="#sunucular" class="text-link">Sunucunu seç <span data-ic="arrow"></span></a><a href="#neler-var" class="text-link muted-link">Neler yapabilirsin?</a></div>
+  </div>
+
+  <div class="home-art" aria-hidden="true">
+    <div class="art-orbit orbit-one"></div><div class="art-orbit orbit-two"></div><span class="art-spark spark-one">✦</span><span class="art-spark spark-two">✧</span>
+    <div class="art-card art-armor"><img src="/assets/items/21310.png" alt=""><span>ZIRH</span></div>
+    <div class="art-card art-gem"><img src="/assets/items/125400.png" alt=""><span>SİMYA</span></div>
+    <div class="art-card art-neck"><img src="/assets/items/16610.png" alt=""><span>MÜCEVHER</span></div>
+    <div class="art-card art-sash"><img src="/assets/items/85018.png" alt=""><span>KUŞAK</span></div>
+    <div class="art-weapon"><div class="weapon-corner corner-one"></div><div class="weapon-corner corner-two"></div><span class="art-overline">HER EŞYANIN</span><img src="/assets/items/00360.png" alt=""><strong>bir değeri var.</strong><small>ONU KEŞFET.</small></div>
+    <div class="art-caption"><span></span> OYUNUN DETAYLARI, TEK BİR YERDE.</div>
+    <button class="art-motion-toggle" id="motion-btn" type="button" aria-pressed="true">Ⅱ Hareketi durdur</button>
+  </div>
+</section>
+
+<div class="page">
+  <aside class="ad-rail" aria-label="Reklam alanı"><div class="ad-slot sky"><span>REKLAM</span><b>160 × 600</b></div></aside>
+  <main class="content">
+
+    <section class="volume" id="pazar-hacmi">
+      <div class="vol-main">
+        <span class="eyebrow">Kayıtlı pazar hacmi · tüm sunucular</span>
+        <div class="vol-num"><strong id="v-won">—</strong><span>Won</span></div>
+        <p>İlanlardaki toplam değer. Gerçekleşen satış hacmi değildir.</p>
+      </div>
+      <div class="vol-metrics">
+        <div><strong id="v-list">—</strong><span>Kayıtlı ilan</span></div>
+        <div><strong id="v-sell">—</strong><span>Satıcı kaydı</span></div>
+        <div><strong id="v-ready">—</strong><span>Verisi hazır sunucu</span></div>
+      </div>
+      <div class="vol-share" id="v-share"></div>
+    </section>
+
+    <section class="pulse">
+      <div class="sec-head">
+        <div><span class="eyebrow">Sunucu analizi</span><h2>Pazarın nabzı</h2></div>
+        <label class="pulse-server"><span class="lbl">İncelenen sunucu</span><span class="field sel" style="height:40px"><span data-ic="globe"></span><select id="p-server" aria-label="Sunucu"></select></span></label>
+      </div>
+      <div class="metrics" id="metrics"></div>
+      <div class="chart-card">
+        <div class="chart-top">
+          <div class="readout"><span id="r-cap">Won · son gözlem</span><strong id="r-val">—</strong><small id="r-time"></small></div>
+          <div class="seg" id="range" role="group" aria-label="Zaman aralığı"><button type="button" data-days="1" aria-pressed="true">24 saat</button><button type="button" data-days="7" aria-pressed="false">7 gün</button><button type="button" data-days="30" aria-pressed="false">30 gün</button></div>
+        </div>
+        <div class="chart" id="chart"></div>
+        <div class="chart-foot"><span>Seçili ölçüm sol eksende; diğer çizgiler kendi ölçeğinde, karşılaştırma için soluk gösterilir.</span><span id="c-samples"></span></div>
+      </div>
+    </section>
+
+    <section class="servers" id="sunucular">
+      <div class="sec-head">
+        <div><span class="eyebrow">Pazara açılan kapın</span><h2>Sunucunu seç</h2><p class="sec-sub">Her sunucunun pazarı ayrı. Kendi dünyandan başla.</p></div>
+        <label class="field srv-search"><span data-ic="search"></span><input id="srv-q" placeholder="Sunucu ara…" autocomplete="off" aria-label="Sunucu ara"></label>
+      </div>
+      <div class="srv-state" id="srv-state">Sunucu bilgileri yükleniyor…</div>
+      <div class="srv-grid" id="srv-grid"></div>
+    </section>
+
+    <div class="ad-slot inline"><span>REKLAM</span><b>728 × 90</b></div>
+
+    <section class="features" id="neler-var">
+      <article><i data-ic="search"></i><span>01 / Bul</span><h3>Aradığın özellik, önünde.</h3><p>Eşya, fiyat, seviye ve efsun koşullarını seç. Kategoriye özel filtrelerle ihtiyacına uyan ilana ulaş.</p></article>
+      <article><i data-ic="compare"></i><span>02 / Karşılaştır</span><h3>Farkı detaylarda gör.</h3><p>Üç ilana kadar yan yana incele. Fiyat, efsun, element ve taşları aynı satırda değerlendir.</p></article>
+      <article><i data-ic="history"></i><span>03 / İncele</span><h3>Fiyatın geçmişine bak.</h3><p>Kayıtlı gözlemleri ve fiyat değişimlerini incele; gördüğün bilginin zamanını bil.</p></article>
+    </section>
+
+    <section class="about" id="hakkinda">
+      <div class="about-head">
+        <span class="eyebrow">Metin2 Ticaret Camı rehberi</span>
+        <h2>Ticaret Camı ve Pazar fiyatları, tek yerde</h2>
+        <p>Metin2Search, Metin2 Gelişmiş Ticaret Camı ve Pazar ilanlarını bir arada arar. Eşya, efsun, element, seviye ve fiyata göre filtrele; en uygun ilanı bul, ilanları yan yana karşılaştır ve fiyatın zaman içinde nasıl değiştiğine bak.</p>
+      </div>
+      <div class="about-servers">
+        <h3>Sunucular</h3>
+        <ul class="seo-servers"><li><a href="/pazar?server=safir">Safir</a></li><li><a href="/pazar?server=nite">Nite</a></li><li><a href="/pazar?server=star">Star</a></li><li><a href="/pazar?server=lucifer">Lucifer</a></li><li><a href="/pazar?server=charon">Charon</a></li><li><a href="/pazar?server=bagjanamu">Bagjanamu</a></li><li><a href="/pazar?server=arkadaslar">Arkadaşlar</a></li><li><a href="/pazar?server=marmara">Marmara</a></li><li><a href="/pazar?server=ezel">Ezel</a></li><li><a href="/pazar?server=barbaros">Barbaros</a></li><li><a href="/pazar?server=dandanakan">Dandanakan</a></li></ul>
+      </div>
+      <div class="faq">
+        <h3>Sık sorulan sorular</h3>
+        <details><summary><span>Metin2 Ticaret Camı nedir?</span></summary><p>Ticaret Camı, Metin2’de oyuncuların pazar kurup eşya sattığı ve diğer oyuncuların bu ilanları görüntülediği alandır. Metin2Search bu ilanları oyuna girmeden aramanı kolaylaştırır.</p></details>
+        <details><summary><span>Pazar fiyatları ne kadar güncel?</span></summary><p>Her ilanın yanında en son ne zaman görüldüğü yazar. Gösterilenler oyun içinde görülen ilanlardır; gerçekleşen satış fiyatı değildir.</p></details>
+        
+      </div>
+    </section>
+
+    <div class="closing"><span>Bir sonraki eşyanı <b>detaylarıyla keşfet.</b></span><a class="btn gold" href="/pazar" data-market>Pazara göz at <span data-ic="arrow"></span></a></div>
+
+    <footer class="foot site-foot">
+    <div class="foot-top">
+      <span class="foot-brand">METIN2<b>SEARCH</b> © 2026</span>
+      <nav class="foot-links" aria-label="Yasal bağlantılar"><a href="/veri-kaynagi">Veri Kaynağı</a><a href="/cerez-politikasi">Çerez Politikası</a><a href="/gizlilik-politikasi">Gizlilik Politikası</a><a href="/kullanim-sartlari">Kullanım Şartları</a><a href="/iletisim">İletişim</a><button type="button" class="linklike" data-cookie-settings>Çerez ayarları</button><a href="https://discord.gg/" target="_blank" rel="noopener noreferrer">Discord topluluğu</a></nav>
+    </div>
+    <p class="foot-legal">Metin2Search, Metin2 topluluğu için oluşturulmuş resmi olmayan bir platformdur ve Webzen Inc. veya Gameforge ile bağlantısı yoktur. Metin2 ve ilgili ticari markalar, logolar ve varlıklar ilgili sahiplerinin mülküdür.</p>
+  </footer>
+  </main>
+  <aside class="ad-rail" aria-label="Reklam alanı"><div class="ad-slot sky"><span>REKLAM</span><b>160 × 600</b></div></aside>
+</div>
+
+<script src="cerez.js?v=1"></script>
+<script src="ikon.js?v=12"></script>
+<script src="secim.js?v=14"></script>
+<script src="reklam.js?v=5"></script>
+<script src="ana.js?v=18"></script>
+</body>
+</html>

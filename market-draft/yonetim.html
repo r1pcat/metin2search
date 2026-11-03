@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Yönetim · Metin2Search</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#141517;--panel:#1b1d20;--line:#2b2e33;--text:#ecebe6;--muted:#9a9ca3;--gold:#d4b06a;--ok:#4fd048;--bad:#ef4b53;--warn:#f29a2e;--font:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 var(--font)}
+header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:16px 22px;border-bottom:1px solid var(--line)}
+h1{margin:0;font:700 18px var(--font)}h1 small{color:var(--muted);font-weight:500;margin-left:8px}
+.range button{padding:6px 12px;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:8px;font:600 12.5px var(--font);cursor:pointer}
+.range button.on{border-color:var(--gold);color:var(--gold)}
+main{max-width:1180px;margin:0 auto;padding:18px 22px 50px;display:grid;gap:16px}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.card h2{margin:0 0 10px;font:600 11.5px var(--font);letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+.big{font:700 28px/1.1 var(--font)}.sub{color:var(--muted);font-size:12.5px;margin-top:4px}
+.cols{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+table{width:100%;border-collapse:collapse}td,th{padding:5px 0;text-align:left;font-size:13px;border-bottom:1px solid var(--line)}th{color:var(--muted);font-weight:500}td:last-child,th:last-child{text-align:right}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;vertical-align:middle}
+.ok{background:var(--ok)}.bad{background:var(--bad)}.warn{background:var(--warn)}
+.bars{display:flex;align-items:flex-end;gap:3px;height:120px}.bars i{flex:1;min-width:3px;background:linear-gradient(#d4b06a,#8a6d34);border-radius:3px 3px 0 0;position:relative}
+.bars i:hover::after{content:attr(data-tip);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:#000;color:#fff;padding:3px 7px;border-radius:6px;font:500 11px var(--font);white-space:nowrap;z-index:3;margin-bottom:4px}
+.axis{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin-top:4px}
+.btn{padding:8px 16px;border:1px solid var(--line);background:#23262b;color:var(--text);border-radius:9px;font:600 13px var(--font);cursor:pointer}.btn.warn{border-color:var(--warn);color:var(--warn)}.btn.ok{border-color:var(--ok);color:var(--ok)}.mrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center}.mrow input{flex:1;min-width:200px;padding:8px 11px;border-radius:9px;border:1px solid var(--line);background:#101113;color:var(--text);font:13px var(--font)}
+.empty{color:var(--muted);font-size:13px;padding:6px 0}
+footer{color:var(--muted);font-size:12px;text-align:center;padding:10px}
+</style>
+</head>
+<body>
+<header><h1>Yönetim <small id="upd"></small></h1><div class="range" id="range"><button data-d="1">Bugün</button><button data-d="7" class="on">7 gün</button><button data-d="30">30 gün</button></div></header>
+<main id="app"><div class="empty">Yükleniyor…</div></main>
+<footer>Bu sayfa yalnızca yetkili kişilere görünür. İstatistikler kişi bilgisi içermez; tekil ziyaretçi sayısı yaklaşıktır (sunucu yeniden başlayınca o günün sayısı yeniden başlar).</footer>
+<script src="/yonetim.js?v=1"></script>
+</body>
+</html>
