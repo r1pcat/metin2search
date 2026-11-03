@@ -1,0 +1,39 @@
+# Yerel veri ve gizli bilgiler
+scanner-data/
+config/*
+!config/*.example.json
+market-draft/data/*
+!market-draft/data/definitions/
+!market-draft/data/container-content.json
+market-draft/data/definitions/*
+!market-draft/data/definitions/BENI-OKU.md
+market-draft/assets/items/*
+!market-draft/assets/items/BENI-OKU.md
+!market-draft/assets/items/missing.svg
+market-draft/assets/site/
+market-draft/assets/*.png
+!market-draft/assets/metin2search-logo-*.png
+
+# Derleme çıktıları
+bin/
+obj/
+dist*/
+.build-home/
+test-output/
+native/script.h
+native/test-script.h
+native/build-identity.h
+native/build-native.cmd
+native/*.obj
+native/*.exp
+native/*.lib
+
+# Veritabanları ve kayıtlar
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+*.log
+*.dpapi
+
+node_modules/
+.vs/
