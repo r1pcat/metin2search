@@ -1,0 +1,10 @@
+const {DatabaseSync}=require('node:sqlite'),path=require('node:path'),{createDashboardHistory}=require('./dashboard-history.cjs'),{reconstructDashboard}=require('./reconstruct-dashboard.cjs');
+const id=process.argv[2],sourceFile=process.argv[3];if(!/^[a-z]+$/.test(id||'')||!sourceFile)throw Error('Usage: node backfill-dashboard.cjs safir SOURCE_DATABASE');
+const web=new DatabaseSync(path.join(__dirname,'data/live',id+'.sqlite'),{readOnly:true}),source=new DatabaseSync(sourceFile,{readOnly:true});source.exec('PRAGMA query_only=ON; PRAGMA busy_timeout=1000');
+const metadata=JSON.parse(web.prepare("SELECT value FROM meta WHERE key='snapshot'").get().value),cutoff=Date.parse(metadata.importedAt),keys=new Set(web.prepare('SELECT listing_key FROM listing_lifecycle').all().map(r=>r.listing_key));
+const observations=web.prepare('SELECT observed,seller,won,yang,source_version,listing_key FROM observations').all().filter(r=>keys.has(r.listing_key));
+const lifecycle=source.prepare('SELECT id,key,occurred,is_active FROM lifecycle_events WHERE occurred<=?').all(metadata.importedAt).filter(r=>keys.has(r.key));
+for(const row of web.prepare('SELECT listing_key,removed_at FROM listing_lifecycle WHERE is_active=0 AND removed_at IS NOT NULL').all())lifecycle.push({key:row.listing_key,occurred:row.removed_at,is_active:0,id:Number.MAX_SAFE_INTEGER});
+const points=reconstructDashboard(observations,lifecycle,{cutoff}),store=createDashboardHistory(path.join(__dirname,'data/dashboard-metrics.sqlite'));
+store.backfill(id,points,metadata.revision);console.log(JSON.stringify({server:id,observations:observations.length,events:lifecycle.length,points:points.length,first:points[0],last:points.at(-1),basis:'recorded-observations-and-lifecycle'}));
+store.close();web.close();source.close();

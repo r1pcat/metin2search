@@ -1,0 +1,1 @@
+(()=>{const rail=document.querySelector('.sponsor-rail'),home=document.getElementById('ad-stack-home'),shell=document.querySelector('.shell');if(!rail||!home||!shell)return;const wide=matchMedia('(min-width:1640px)');function place(){const parent=wide.matches?shell:home;if(rail.parentElement!==parent)parent.append(rail)}wide.addEventListener('change',place);place()})();
