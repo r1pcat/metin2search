@@ -1,0 +1,16 @@
+bin/
+obj/
+dist/
+dist-v*/
+.build-home/
+test-output/
+preview-data/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+native/*.obj
+native/*.exp
+native/*.lib
+native/script.h
+native/test-script.h
+native/build-native.cmd
