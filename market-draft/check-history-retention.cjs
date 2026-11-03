@@ -1,0 +1,57 @@
+﻿require('./test-cleanup.cjs');
+const assert=require('node:assert/strict'),fs=require('node:fs'),os=require('node:os'),path=require('node:path'),crypto=require('node:crypto'),{DatabaseSync}=require('node:sqlite');
+const {pruneHistory,historyDays}=require('./retention.cjs'),{pruneArchive}=require('./history-prune.cjs'),{parseCatalog}=require('./history-archive.cjs');
+
+const now=Date.parse('2026-10-20T12:00:00Z');
+const db=new DatabaseSync(':memory:');
+db.exec('CREATE TABLE observations(feature_key TEXT,observed TEXT,seller TEXT,won INTEGER,yang INTEGER,quantity INTEGER,source_version INTEGER UNIQUE,listing_key TEXT)');
+let version=0;const obs=(feature,day,hour,seller,won,yang,quantity=1)=>db.prepare('INSERT INTO observations VALUES(?,?,?,?,?,?,?,?)').run(feature,`${day}T${String(hour).padStart(2,'0')}:00:00.0000000+00:00`,seller,won,yang,quantity,++version,'k'+version);
+obs('flower','2026-09-19',1,'a',0,100);obs('flower','2026-09-19',2,'b',0,300);obs('flower','2026-09-19',3,'c',0,200);
+obs('rare','2026-09-19',4,'a',0,5000);
+obs('stack','2026-09-19',5,'a',0,1000,10);obs('stack','2026-09-19',6,'a',0,1200,10);
+obs('flower','2026-09-18',1,'a',0,50);obs('flower','2026-09-18',2,'a',0,70);
+obs('flower','2026-09-20',1,'a',0,150);obs('flower','2026-09-30',1,'a',0,160);obs('rare','2026-10-19',1,'b',0,6000);
+const firstKept=version-2;
+const total=()=>db.prepare('SELECT COUNT(*) n FROM observations').get().n;
+assert.equal(total(),11);
+
+assert.equal(historyDays({}),30);assert.equal(historyDays({HISTORY_DAYS:'off'}),0);assert.equal(historyDays({HISTORY_DAYS:'7'}),7);assert.equal(historyDays({HISTORY_DAYS:'0'}),30,'0 gün geçersiz: varsayılan');assert.equal(historyDays({HISTORY_DAYS:'x'}),30);
+assert.deepEqual({...pruneHistory(db,{days:0,now})},{days:0,deleted:0,summaries:0,minRetainedVersion:null},'kapalıyken hiçbir şey silinmez');
+assert.equal(total(),11);
+
+const r=pruneHistory(db,{days:30,now});
+assert.equal(r.days,2,'iki eski gün işlendi (18 ve 19 Eylül)');assert.equal(r.deleted,8);
+assert.equal(total(),3,'pencere içindeki 3 gözlem kaldı');
+assert.deepEqual(db.prepare('SELECT DISTINCT substr(observed,1,10) d FROM observations ORDER BY d').all().map(x=>x.d),['2026-09-20','2026-09-30','2026-10-19']);
+const day19=db.prepare("SELECT * FROM price_daily WHERE day='2026-09-19' ORDER BY feature_key").all().map(x=>({...x}));
+assert.deepEqual(day19.map(x=>[x.feature_key,x.n,x.sellers,x.min_unit,x.median_unit,x.max_unit]),[['flower',3,3,100,200,300],['stack',2,1,100,110,120]],'günlük özet: adet, satıcı sayısı, en düşük/medyan/en yüksek birim fiyat; tek gözlemli ürün özetlenmez');
+const day18=db.prepare("SELECT * FROM price_daily WHERE day='2026-09-18'").all().map(x=>({...x}));
+assert.deepEqual(day18.map(x=>[x.feature_key,x.n,x.sellers,x.min_unit,x.max_unit]),[['flower',2,1,50,70]]);
+assert.equal(r.minRetainedVersion,firstKept,'en eski tutulan sürüm numarası (arşiv kırpması için)');
+const again=pruneHistory(db,{days:30,now});assert.deepEqual([again.days,again.deleted,again.summaries],[0,0,0],'ikinci çalıştırma yeni bir şey yapmaz');
+assert.equal(db.prepare('SELECT COUNT(*) n FROM price_daily').get().n,3);
+const later=pruneHistory(db,{days:30,now:Date.parse('2026-11-05T12:00:00Z')});assert.equal(later.deleted,2);assert.equal(db.prepare('SELECT COUNT(*) n FROM price_daily').get().n,3);
+const big=new DatabaseSync(':memory:');big.exec('CREATE TABLE observations(feature_key TEXT,observed TEXT,seller TEXT,won INTEGER,yang INTEGER,quantity INTEGER,source_version INTEGER UNIQUE,listing_key TEXT)');
+for(let d=1;d<=25;d++)for(let i=0;i<3;i++)big.prepare('INSERT INTO observations VALUES(?,?,?,?,?,?,?,?)').run('f',`2026-08-${String(d).padStart(2,'0')}T0${i}:00:00+00:00`,'s',0,10+i,1,d*10+i,'k');
+assert.equal(pruneHistory(big,{days:30,now,maxDays:10}).days,10);assert.equal(pruneHistory(big,{days:30,now,maxDays:10}).days,10);assert.equal(pruneHistory(big,{days:30,now,maxDays:10}).days,5);assert.equal(big.prepare('SELECT COUNT(*) n FROM observations').get().n,0);
+
+const root=fs.mkdtempSync(path.join(os.tmpdir(),'m2-arch-')),prefix='metin2-history-v1',server='safir',dataset='ds1';
+const chunkKey=n=>{const sha=crypto.createHash('sha256').update('chunk'+n).digest('hex');return {key:'chunks/'+sha+'.json.br',sha}};
+const ranges=[[1,250],[251,500],[501,750],[751,1000]].map(([first,last],i)=>{const c=chunkKey(i);fs.mkdirSync(path.join(root,prefix,'chunks'),{recursive:true});fs.writeFileSync(path.join(root,prefix,c.key),Buffer.alloc(100+i));return {first,last,count:last-first+1,key:c.key,sha:c.sha,bytes:100+i,rawBytes:500}});
+const catDir=path.join(root,prefix,'catalog',server,dataset);fs.mkdirSync(catDir,{recursive:true});
+fs.writeFileSync(path.join(catDir,'0.json'),JSON.stringify({schemaVersion:1,server,dataset,block:0,ranges}));
+const second=chunkKey(9);fs.writeFileSync(path.join(root,prefix,second.key),Buffer.alloc(50));
+fs.writeFileSync(path.join(catDir,'1.json'),JSON.stringify({schemaVersion:1,server,dataset,block:1,ranges:[{first:50001,last:50250,count:250,key:second.key,sha:second.sha,bytes:50,rawBytes:300}]}));
+const out=pruneArchive({localRoot:root,prefix,server,dataset,minVersion:600});
+assert.equal(out.removedChunks,2,'son sürümü 600 un altında kalan iki parça silindi (1-250, 251-500)');assert.equal(out.removedRanges,2);assert.equal(out.removedCatalogs,0);
+const kept=parseCatalog({bytes:fs.readFileSync(path.join(catDir,'0.json'))},server,dataset,0);
+assert.deepEqual(kept.ranges.map(x=>[x.first,x.last]),[[501,750],[751,1000]],'katalog geçerli kaldı, başı kırpıldı (501-750 parçası 600 ü içerdiği için tutuldu)');
+for(const range of kept.ranges)assert.ok(fs.existsSync(path.join(root,prefix,range.key)),'tutulan parça duruyor');
+assert.ok(fs.existsSync(path.join(catDir,'1.json'))&&fs.existsSync(path.join(root,prefix,second.key)),'sonraki blok dokunulmadı');
+assert.equal(pruneArchive({localRoot:root,prefix,server,dataset,minVersion:600}).removedChunks,0,'idempotent');
+const all=pruneArchive({localRoot:root,prefix,server,dataset,minVersion:60000});
+assert.equal(all.removedCatalogs,2,'tüm parçaları eski kalan katalog dosyası silinir');assert.ok(!fs.existsSync(path.join(catDir,'0.json')));
+assert.equal(parseCatalog(null,server,dataset,0).ranges.length,0,'katalogsuz blok boş katalog sayılır (dışa aktarıcı bozulmaz)');
+assert.equal(pruneArchive({localRoot:root,prefix,server,dataset,minVersion:null}).removedChunks,0,'sürüm bilinmiyorsa dokunmaz');
+fs.rmSync(root,{recursive:true,force:true});
+console.log('History retention: daily summaries, whole-day window, backlog, idempotency, archive chunk pruning with valid catalogs passed.');

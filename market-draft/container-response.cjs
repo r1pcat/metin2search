@@ -1,0 +1,2 @@
+function publicContainer(entry){const reward=r=>{const {sourceUrl,...rest}=r;return rest};return {vnum:entry.vnum,name:entry.name,status:entry.status,...(entry.selection?{selection:true}:{}),checkedAt:entry.checkedAt,rewards:entry.rewards.map(reward),...(entry.defaultVariant!=null?{defaultVariant:entry.defaultVariant}:{}),...(entry.variants?{variants:entry.variants.map(v=>({title:v.title,checkedAt:v.checkedAt,rewards:v.rewards.map(reward)}))}:{})}}
+module.exports={publicContainer};

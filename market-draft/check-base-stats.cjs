@@ -1,0 +1,21 @@
+﻿const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
+const src=fs.readFileSync(path.join(__dirname,'taslak.js'),'utf8').replace(/\r\n/g,'\n');
+const grab=(a,end)=>{const i=src.indexOf(a);assert(i>=0,'not found: '+a);const j=end?src.indexOf(end,i)+end.length:src.indexOf('\n',i);return src.slice(i,j)};
+const gi=src.indexOf('function gameLines(it){'),ge=src.indexOf('\n}\n',gi)+3;
+const code=[grab('const DEFAULT_LINE='),grab('const sockets='),grab('const title='),grab('function lineColor(',"return '#'+n.toString(16).padStart(6,'0')}"),grab('const ELEMENTS='),grab('function elementFrom('),grab('const elementOf='),grab('const elementText='),grab('function placeElement(','  return out}'),grab('const BASE_ATK='),grab('function baseGaps(','return gaps}'),grab('function placeBaseGaps(','out.splice(at+1,0,g)}}'),src.slice(gi,ge)].join('\n');
+const sb={esc:String,elImg:()=>''};vm.createContext(sb);vm.runInContext(code+';this.gameLines=gameLines',sb);
+const eq=(a,b)=>assert.equal(JSON.stringify(a),JSON.stringify(b));
+const text=it=>sb.gameLines(it).lines.map(l=>l.t);
+const call=(...a)=>a.map(t=>[t,-7751539]);
+let it={ClientDetails:{itemSubType:0,rendererCalls:{AppendTextLine:[['Zodyak Kılıç+9',-1],...call('Buz +3','Seviye: 105','Saldırı Hızı +%27','[ Giyilebilir ]')]}},TooltipLines:['Zodyak Kılıç+9','Buz +3','Seviye: 105','Saldırı Hızı +%27','[ Giyilebilir ]','Saldırı değeri 431 - 451','(+12)','Ninja'],displayBonuses:[]};
+let t=text(it);eq(t.slice(0,4),['Buz +3','Seviye: 105','Saldırı değeri 431 - 451 (+12)','Saldırı Hızı +%27']);
+it.ClientDetails.rendererCalls.AppendTextLine.splice(3,0,...call('Saldırı değeri 431 - 451'));t=text(it);assert.equal(t.filter(x=>/^Saldırı değeri/.test(x)).length,1);
+it={ClientDetails:{itemSubType:1,rendererCalls:{AppendTextLine:[['Bıçak',-1],...call('Şimşek +3','Seviye: 105','Büyülü saldırı değeri 399 - 461','Saldırı Hızı +%27')]}},TooltipLines:['Bıçak','Saldırı değeri 366 - 414','(+12)'],displayBonuses:[]};
+t=text(it);eq(t.slice(1,4),['Seviye: 105','Saldırı değeri 366 - 414 (+12)','Büyülü saldırı değeri 399 - 461']);
+it.ClientDetails.itemSubType=5;t=text(it);eq(t.slice(1,4),['Seviye: 105','Büyülü saldırı değeri 399 - 461','Saldırı değeri 366 - 414 (+12)']);
+it={embedded:{name:'x'},ClientDetails:{itemType:28,rendererCalls:{AppendTextLine:[['Kuşak',-1],...call('Emiş oranı: %25','[ Giyilebilir ]')],AppendTextLineAcce:[['Saldırı Hızı +%6',-1]]}},TooltipLines:['Kuşak','Emiş oranı: %25','Saldırı değeri 121 - 171','(+3)','Saldırı Hızı +%6'],displayBonuses:[]};
+t=text(it);eq(t.slice(0,3),['Emiş oranı: %25','Saldırı değeri 121 - 171 (+3)','Saldırı Hızı +%6']);
+it={ClientDetails:{itemType:2,rendererCalls:{AppendTextLine:[['Zırh',-1],...call('Seviye: 30','Defans 276')]}},TooltipLines:['Zırh','Seviye: 30','Defans 276'],displayBonuses:[]};
+eq(text(it),['Seviye: 30','Defans 276']);
+console.log('Temel özellikler: eksik saldırı değeri satırı tam tooltip metninden tamamlanıyor; çift satır, zırh ve yelpaze sırası doğru.');
+

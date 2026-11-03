@@ -1,0 +1,17 @@
+require('./test-cleanup.cjs');
+const assert=require('node:assert/strict'),fs=require('node:fs'),os=require('node:os'),path=require('node:path');
+const {createMaintenance}=require('./maintenance.cjs');
+const dir=fs.mkdtempSync(path.join(os.tmpdir(),'m2-maint-')),file=path.join(dir,'data','maintenance.json');
+let m=createMaintenance({file});
+assert.equal(m.get().on,false);assert.equal(m.blocks('/pazar',false),false,'kapalıyken hiçbir şey engellenmez');
+m.set(true,'  15 dakika   sonra <b>döneriz</b>  ');
+assert.equal(m.get().on,true);assert.ok(m.get().since);assert.equal(m.get().message,'15 dakika sonra <b>döneriz</b>');
+for(const p of ['/','/pazar','/api/items','/api/meta','/api/events','/veri-kaynagi','/sitemap.xml'])assert.equal(m.blocks(p,false),true,p+' engellenmeli');
+for(const p of ['/yonetim','/yonetim.js','/api/yonetim','/api/yonetim/bakim','/api/health','/robots.txt','/favicon.svg','/assets/metin2-logo.png'])assert.equal(m.blocks(p,false),false,p+' açık kalmalı');
+assert.equal(m.blocks('/pazar',true),false,'sunucunun kendisinden gelen istek siteyi görebilmeli');
+const html=m.page();assert(html.includes('Kısa bir bakımdayız'));assert(!html.includes('<b>döneriz</b>'),'mesaj HTML olarak yorumlanmamalı');assert(html.includes('&lt;b&gt;döneriz'));assert(!/<script/i.test(html));
+const again=createMaintenance({file});assert.equal(again.get().on,true);assert.equal(again.get().message,m.get().message);
+again.set(false);assert.equal(again.get().on,false);assert.equal(again.get().message,'');assert.equal(createMaintenance({file}).get().on,false);
+m.set(true,'x'.repeat(500));assert.equal(m.get().message.length,200);
+fs.writeFileSync(file,'{bozuk');assert.equal(createMaintenance({file}).get().on,false);
+console.log('Bakım modu: engelleme, istisnalar, mesaj kaçışı, kalıcılık ve bozuk dosya denetimleri geçti.');

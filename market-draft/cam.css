@@ -1,0 +1,62 @@
+html{background:#14151a}
+body{background:transparent!important}
+html::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+ background:radial-gradient(520px 380px at 12% 8%,rgba(201,164,94,.24),transparent 70%),
+  radial-gradient(560px 420px at 88% 30%,rgba(105,200,245,.11),transparent 70%),
+  radial-gradient(640px 460px at 40% 100%,rgba(201,164,94,.14),transparent 70%);filter:blur(10px)}
+
+article.item,section.search-panel,section.context,section.volume,div.chart-card,article.srv,a.srv,div.closing,
+aside.drawer,.cmp-tray,.shop-notice,.cs-menu{
+ background:linear-gradient(135deg,rgba(255,255,255,.07),rgba(255,255,255,.025))!important;
+ border-color:rgba(255,255,255,.10)!important;
+ -webkit-backdrop-filter:blur(16px) saturate(130%);backdrop-filter:blur(16px) saturate(130%);
+ box-shadow:0 8px 28px rgba(0,0,0,.30),inset 0 1px 0 rgba(255,255,255,.07)}
+
+section.search-panel{position:relative;z-index:30}
+.field:focus-within{z-index:40}
+.hero-search{position:relative;z-index:30}
+
+.results .applied{background:linear-gradient(135deg,rgba(255,255,255,.07),rgba(255,255,255,.025))!important;
+ border-color:rgba(255,255,255,.14)!important;
+ -webkit-backdrop-filter:blur(14px) saturate(130%);backdrop-filter:blur(14px) saturate(130%);
+ box-shadow:0 6px 20px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.07)}
+.results .applied .chip:not(.bonus):not(.el-chip):not(.cat-chip){background:rgba(255,255,255,.06)!important;border-color:rgba(255,255,255,.14)!important}
+.results .applied .chip.cat-chip{background:rgba(255,255,255,.06)!important;border-color:rgba(201,164,94,.45)!important}
+.results .applied .chip:not(.bonus):not(.el-chip){color:#fff!important;font-weight:600}
+.results .applied .chip:not(.bonus):not(.el-chip) small{color:#c3c6d0!important;font-weight:500}
+.results .applied .chip:not(.bonus):not(.el-chip)>button{color:#d5d8e0}
+.results .applied .reset-all{background:rgba(255,255,255,.04)!important;border-color:rgba(201,164,94,.55)!important}
+.results .applied .reset-all:hover{background:var(--gold)!important}
+
+.art-card,.art-weapon{
+ background:linear-gradient(135deg,rgba(24,25,30,.62),rgba(10,11,14,.46) 60%,rgba(10,11,14,.55))!important;
+ border:1px solid rgba(255,255,255,.12)!important;
+ -webkit-backdrop-filter:blur(14px) saturate(120%);backdrop-filter:blur(14px) saturate(120%);
+ box-shadow:0 14px 34px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.12)!important}
+.art-weapon{background:radial-gradient(ellipse at 50% 35%,rgba(201,164,94,.12),transparent 68%),linear-gradient(145deg,rgba(26,27,32,.66),rgba(10,11,14,.5))!important;border-color:rgba(201,164,94,.30)!important}
+
+.hero-search .field,.pulse-server .field,label.field.srv-search{
+ background:linear-gradient(135deg,rgba(255,255,255,.07),rgba(255,255,255,.025))!important;
+ border-color:rgba(255,255,255,.14)!important;
+ -webkit-backdrop-filter:blur(14px) saturate(130%);backdrop-filter:blur(14px) saturate(130%)}
+.hero-search .field.sel:has(.cs-btn.cs-set),.pulse-server .field.sel:has(.cs-btn.cs-set){border-color:rgba(201,164,94,.38)!important}
+
+.server-menu,div.suggest{background:rgba(22,23,27,.94)!important;border:1px solid rgba(255,255,255,.14)!important;
+ -webkit-backdrop-filter:blur(18px) saturate(130%);backdrop-filter:blur(18px) saturate(130%);
+ box-shadow:0 18px 50px -14px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.08)}
+.cs-opt:hover,.cs-opt.act{background:rgba(255,255,255,.08)!important}
+
+dialog.modal{background:linear-gradient(135deg,#2a2c33,#1b1c21)!important}
+dialog.modal::backdrop{background:rgba(8,8,10,.45);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+
+.meta-line{color:#e6e8ee;font-weight:600}
+.meta-line>span:not(.el-mini){color:#e6e8ee!important;font-weight:600}
+.meta-line .el-mini{color:var(--el)!important}
+
+*{scrollbar-width:thin;scrollbar-color:rgba(201,164,94,.45) rgba(255,255,255,.04)}
+html{scrollbar-color:rgba(201,164,94,.5) #14151a}
+.meta-line .sep{background:#8d909a!important;opacity:.9}
+
+@media (prefers-reduced-transparency:reduce){
+ article.item,section.search-panel,section.context,section.volume,div.chart-card,article.srv,a.srv,div.closing,aside.drawer,.cmp-tray,.shop-notice,.cs-menu,div.suggest,.server-menu{background:#1d1f24!important;-webkit-backdrop-filter:none;backdrop-filter:none}
+ html::before{display:none}}

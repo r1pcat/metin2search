@@ -1,0 +1,10 @@
+const assert=require('node:assert/strict');
+(async()=>{const base='http://127.0.0.1:4180',catalog=await(await fetch(base+'/api/servers')).json();assert.equal(catalog.servers.length,11);assert(catalog.servers.find(s=>s.id==='safir').available);assert(catalog.servers.filter(s=>s.id!=='safir').every(s=>!s.available));assert(catalog.metrics.checks>=1);assert.equal(catalog.intervalSeconds,Number(process.env.SYNC_INTERVAL_MS||1000)/1000);assert.equal(catalog.until,null);assert.equal(catalog.metrics.errors,0);
+const closed=await fetch(base+'/api/items?server=star');assert.equal(closed.status,409);
+const status=await fetch(base+'/api/status?server=safir'),tag=status.headers.get('etag');assert(tag);assert.equal((await fetch(base+'/api/status?server=safir',{headers:{'If-None-Match':tag}})).status,304);
+const list=await(await fetch(base+'/api/items?server=safir&sort=unit-asc')).json();assert(list.items.every(x=>x.serverId==='safir'));const id=list.items[0].id;assert.equal((await fetch(base+'/api/item?server=star&id='+id)).status,409);const h=await(await fetch(base+'/api/history?server=safir&id='+id)).json();assert(h.observations.length);
+const before=(await(await fetch(base+'/api/servers')).json()).webMetrics.cacheHits;await fetch(base+'/api/items?server=safir&sort=unit-asc');const after=(await(await fetch(base+'/api/servers')).json()).webMetrics.cacheHits;assert(after>before);
+const controller=new AbortController(),stream=await fetch(base+'/api/events?server=safir',{signal:controller.signal}),reader=stream.body.getReader();let text='';while(!text.includes('event: state')){const chunk=await reader.read();text+=new TextDecoder().decode(chunk.value)}assert(text.includes('"server":"safir"'));controller.abort();
+console.log(JSON.stringify({liveCount:list.total,checks:catalog.metrics.checks,errors:catalog.metrics.errors,cacheHits:after,eventStream:true}));console.log('Kapalı sunucular, sunucu ayrımı, sürüm kontrolü, önbellek ve tek canlı bağlantı doğrulandı.');})().catch(e=>{console.error(e);process.exitCode=1});
+
+

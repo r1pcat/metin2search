@@ -1,0 +1,14 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
+const source=fs.readFileSync(path.join(__dirname,'app.js'),'utf8');
+const scope={native:x=>x.ClientDetails||{}};vm.createContext(scope);
+vm.runInContext(source.split('\n').find(l=>l.startsWith('function tooltipLineOrder(')),scope);
+const lines=['Yılan büyük kılıcı+7','-%10 Saldırı hızı.','Seviye: 120','Saldırı değeri 414 - 542','(+2)','Ortalama Zarar %13','Canavarlara karşı güçlü +%9','Karanlığın gücü +2%','Büyü Hızı +%6','[ Giyilebilir ]','Savaşçı'];
+const order=Array.from(scope.tooltipLineOrder(lines,new Set(['Büyü Hızı +%6']),{ClientDetails:{itemType:1,element:{grade:1}}}));
+assert.deepEqual([...order].sort((a,b)=>a-b),lines.slice(1).map((_,i)=>i+1));
+assert(order.indexOf(2)<order.indexOf(1));
+assert.equal(order.indexOf(4),order.indexOf(3)+1);
+assert.equal(order.indexOf(7),order.indexOf(4)+1);
+assert(order.indexOf(7)<order.indexOf(5));
+const pet={ClientDetails:{itemType:16}};
+assert.deepEqual(Array.from(scope.tooltipLineOrder(lines,new Set(),pet)),lines.slice(1).map((_,i)=>i+1));
+console.log('Seviye, negatif hız, saldırı bonusu ve element gücü sırası doğrulandı; satırlar korundu.');

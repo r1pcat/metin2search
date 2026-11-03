@@ -1,0 +1,22 @@
+.err-main{min-height:calc(100vh - 62px);display:flex;flex-direction:column;justify-content:space-between}
+.err-card{text-align:center;padding:48px 8px 40px;max-width:640px;margin:0 auto;width:100%}
+.err-code{display:flex;justify-content:center;align-items:center;gap:6px;margin-bottom:8px;font:700 clamp(84px,18vw,132px)/1 var(--brand-font);letter-spacing:.02em;
+  background:linear-gradient(180deg,#f6e0a2,#d2ab5f 55%,#9b7733);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 6px 22px rgba(0,0,0,.5))}
+.err-code span{-webkit-text-fill-color:transparent}
+.err-code i{display:grid;place-items:center;width:clamp(72px,15vw,112px);height:clamp(80px,16.5vw,124px)}
+.err-zero svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 8px 18px rgba(0,0,0,.55));animation:err-float 4s ease-in-out infinite}
+.err-zero .ez-spark{transform-box:fill-box;transform-origin:center;animation:err-spark 2.6s ease-in-out infinite}
+@keyframes err-spark{0%,100%{opacity:.25;transform:scale(.7) rotate(0)}50%{opacity:1;transform:scale(1.15) rotate(45deg)}}
+@keyframes err-float{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-6px) rotate(3deg)}}
+@media (prefers-reduced-motion:reduce){.err-zero svg,.err-zero .ez-spark{animation:none}}
+.err-card h1{margin:0 0 10px;font-size:clamp(24px,5vw,32px);line-height:1.2}
+.err-lead{margin:0 auto 14px;max-width:520px;color:var(--muted);font-size:15px;line-height:1.65}
+.err-path{margin:0 auto 18px;max-width:100%;padding:6px 12px;display:inline-block;border-radius:8px;border:1px solid var(--line2);background:var(--inset);
+  color:var(--dim);font:12.5px ui-monospace,Consolas,monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.err-path[hidden]{display:none}
+.err-search{display:flex;gap:8px;max-width:520px;margin:6px auto 22px}
+.err-search .field{flex:1;height:46px}
+.err-search .btn{height:46px}
+.err-ic{color:var(--dim);display:grid}
+.err-links{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+@media (max-width:520px){.err-search{flex-direction:column}.err-links .btn{flex:1 1 100%;justify-content:center}}

@@ -1,0 +1,30 @@
+const assert=require('node:assert/strict'),{DatabaseSync}=require('node:sqlite');
+const {equipmentTraits,createEquipmentFilters,buildEquipmentTypes,resolveEquipmentProto}=require('./equipment-filters.cjs');
+const proto={10:{Type:'ITEM_WEAPON',SubType:'WEAPON_SWORD',AntiFlags:'ANTI_MUDANG | ANTI_WOLFMAN'},20:{Type:'ITEM_WEAPON',SubType:'WEAPON_SWORD',AntiFlags:'ANTI_MUSA | ANTI_ASSASSIN | ANTI_MUDANG | ANTI_WOLFMAN'},30:{Type:'ITEM_COSTUME',SubType:'COSTUME_WEAPON',Value3:'1',AntiFlags:'ANTI_MUSA | ANTI_SURA | ANTI_MUDANG | ANTI_WOLFMAN'},40:{Type:'ITEM_COSTUME',SubType:'COSTUME_MOUNT'},50:{Type:'ITEM_ARMOR',SubType:'ARMOR_BODY',AntiFlags:'ANTI_ASSASSIN | ANTI_SURA | ANTI_MUDANG | ANTI_WOLFMAN'}};
+proto[145400]={Type:'ITEM_DS',SubType:'DS_SLOT4'};
+const conditions=createEquipmentFilters(proto),db=new DatabaseSync(':memory:');
+db.exec('CREATE TABLE items(id TEXT,vnum INTEGER,job INTEGER);CREATE TABLE item_bonuses(item_id TEXT,type INTEGER,slot INTEGER,value REAL);');
+for(const [id,vnum] of [['shared',10],['sura',20],['ninja-costume',30],['mount',40],['warrior',50],['refined-alchemy',145460]])db.prepare('INSERT INTO items VALUES(?,?,0)').run(id,vnum);
+for(const [id,count] of [['shared',5],['sura',3],['ninja-costume',1],['mount',5],['warrior',2]]){for(let i=0;i<count;i++)db.prepare('INSERT INTO item_bonuses VALUES(?,?,?,10)').run(id,1,i);db.prepare('INSERT INTO item_bonuses VALUES(?,1,5,10)').run(id);db.prepare('INSERT INTO item_bonuses VALUES(?,1,6,10)').run(id)}
+function list(params){const q=new URLSearchParams(params),{where,args}=conditions(q);return db.prepare('SELECT id FROM items'+(where.length?' WHERE '+where.join(' AND '):'')+' ORDER BY id').all(...args).map(x=>x.id)}
+assert.deepEqual(list({character:'1'}),['ninja-costume','shared'],'Shared swords remain visible for Ninja regardless of scan job');
+assert.deepEqual(list({character:'2'}),['shared','sura'],'Sura-only swords remain Sura-only');
+assert.deepEqual(list({bonusCount:'7'}),['shared'],'Both normal and rare bonus slots count; mounts are excluded');
+assert.deepEqual(list({bonusCount:'3,5',character:'1'}),['ninja-costume']);
+assert.deepEqual(list({bonusCount:'4,7'}),['shared','warrior']);
+assert.equal(equipmentTraits(proto[40]).bonusCount,false);
+assert.deepEqual(list({equipmentType:'alchemy-DS_SLOT4'}),['refined-alchemy']);
+assert.equal(resolveEquipmentProto(proto,145460).Type,'ITEM_DS');
+assert.deepEqual(list({equipmentType:'weapon-0',character:'2'}),['shared','sura']);
+assert.deepEqual(list({equipmentType:'costume-weapon-1',character:'1'}),['ninja-costume']);
+assert.deepEqual(list({equipmentType:'weapon-0',character:'3'}),[]);
+assert.deepEqual(buildEquipmentTypes(proto).find(t=>t.id==='costume-weapon-1').jobs,[1]);
+assert.equal(equipmentTraits({Type:'ITEM_DS'}).maxBonusCount,6);
+assert.equal(equipmentTraits(proto[30]).maxBonusCount,3);
+assert.deepEqual(equipmentTraits({Type:'ITEM_COSTUME',SubType:'COSTUME_WEAPON',Value3:'0',AntiFlags:'NONE'}).allowedJobs,[0,1,2],'Unrestricted placeholder swords must not appear for Shaman');
+assert.deepEqual(equipmentTraits({Type:'ITEM_COSTUME',SubType:'COSTUME_WEAPON',Value3:'4',AntiFlags:'NONE'}).allowedJobs,[3]);
+assert.deepEqual(equipmentTraits({Type:'ITEM_COSTUME',SubType:'COSTUME_WEAPON',Value3:'8',AntiFlags:'NONE'}).allowedJobs,[4]);
+assert.throws(()=>conditions(new URLSearchParams({equipmentType:'unknown'})));
+assert.throws(()=>conditions(new URLSearchParams({character:'8'})));
+assert.throws(()=>conditions(new URLSearchParams({bonusCount:'1 OR 1'})));
+db.close();console.log('Character eligibility, shared equipment, costumes, total normal and rare bonus counts, multi-selection and validation passed.');
